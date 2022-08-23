@@ -36,6 +36,10 @@ jobs:
           name: build the UI
           command: |
             cd reactnd-contacts-complete && npm run build
+      - run:
+          name: Deploy App
+          command: |
+            npm run frontend:deploy
 workflows:
   aws-cli:
     jobs:
