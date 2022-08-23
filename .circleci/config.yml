@@ -4,7 +4,10 @@ orbs:
   # orgs contain basc recipes and reproducible actions (install node, aws, etc.)
   node: circleci/node@4.1.0
   # different jobs are calles later in the workflows sections
+  aws-cli: circleci/aws-cli@2.0.6
 jobs:
+  aws-cli-cred-setup:
+    executor: aws-cli/default
   build:
     docker:
       # the base image can run most needed actions with orbs
@@ -12,6 +15,10 @@ jobs:
     steps:
       - node/install
       - checkout
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_SECRET_KEY
+          aws-region: AWS_REGION
       # install dependencies in both apps
       - run:
           name: install server dependencies
@@ -29,3 +36,8 @@ jobs:
           name: build the UI
           command: |
             cd reactnd-contacts-complete && npm run build
+workflows:
+  aws-cli:
+    jobs:
+      - aws-cli-cred-setup:
+          context: aws
